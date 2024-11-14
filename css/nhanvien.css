@@ -143,3 +143,38 @@ button {
 .footer p:hover {
     color: #3498db; /* Change text color on hover */
 }
+/* Phần bảng hiển thị danh sách nhân viên */
+#employeeList table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+#employeeList th,
+#employeeList td {
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+#employeeList tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+#employeeList tr:hover {
+    background-color: #ddd;
+}
+
+#employeeList td {
+    color: #333;
+    font-size: 16px;
+}
+
+#employeeList button {
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}

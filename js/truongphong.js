@@ -9,7 +9,7 @@ function showPersonalInfo() {
 function showSalary() {
     hideAllSections();
     document.getElementById("viewSalary").style.display = "block";
-    const salary = 15000000;
+    const salary = 35000000;
     document.getElementById("salaryTable").innerHTML = `
         <tr><th>Thông tin</th><th>Giá trị</th></tr>
         <tr><td>Họ và tên</td><td>${document.getElementById("name").value}</td></tr>
@@ -81,7 +81,7 @@ function calculateMonthlyTax() {
     hideAllSections();
     document.getElementById("monthlyTax").style.display = "block";
     const deduction = 11000000 + parseInt(document.getElementById("dependents").value) * 4400000;
-    const salary = 15000000;
+    const salary = 35000000;
     const taxableIncome = salary - deduction;
     const monthlyTax = taxableIncome > 0 ? taxableIncome * 0.05 : 0;
     document.getElementById("monthlyTaxTable").innerHTML = `
@@ -229,4 +229,134 @@ function hideAllSections() {
     const sections = document.querySelectorAll(".section");
     sections.forEach(section => section.style.display = "none");
 }
+function showEmployeeList() {
+    hideAllSections();
+    document.getElementById("employeeList").style.display = "block";
+    
+    // data nhan vien
+    const employees = [
+        { id: 1, name: "Nguyễn Văn A", position: "Trưởng Phòng", salary: 35000000, dependents: 0 },
+        { id: 2, name: "Trần Thị B", position: "Nhân viên", salary: 10000000, dependents: 1 },
+        { id: 3, name: "Lê Văn C", position: "Nhân viên", salary: 12000000, dependents: 1 },
+        { id: 4, name: "Phạm Minh D", position: "Phó Phòng", salary: 16000000, dependents: 0 },
+        { id: 5, name: "Hoàng Thị E", position: "Nhân viên", salary: 11000000, dependents: 2 },
+        { id: 6, name: "Vũ Quốc F", position: "Phó Phòng", salary: 18000000, dependents: 1 },
+        { id: 7, name: "Nguyễn Thị G", position: "Nhân viên", salary: 9500000, dependents: 1 },
+        { id: 8, name: "Trương Minh H", position: "Nhân viên", salary: 13000000, dependents: 2 },
+        { id: 9, name: "Bùi Thanh I", position: "Nhân viên", salary: 10500000, dependents: 2 },
+        { id: 10, name: "Lê Minh J", position: "Nhân viên", salary: 13000000, dependents: 0 }
+    ];
 
+    // Define the tax calculation functions
+    const personalAllowance = 11000000; // Giảm trừ bản thân
+    const dependentAllowance = 4400000; // Giảm trừ cho mỗi người phụ thuộc
+
+    // Biểu thuế lũy tiến từng phần
+    const taxBrackets = [
+        { threshold: 5000000, rate: 0.05 },
+        { threshold: 10000000, rate: 0.1 },
+        { threshold: 18000000, rate: 0.15 },
+        { threshold: 32000000, rate: 0.2 },
+        { threshold: 52000000, rate: 0.25 },
+        { threshold: 80000000, rate: 0.3 },
+        { threshold: Infinity, rate: 0.35 }
+    ];
+
+    function calculateTax(income) {
+        let tax = 0;
+        let previousThreshold = 0;
+        
+        // Calculate the tax based on tax brackets
+        for (const bracket of taxBrackets) {
+            if (income > previousThreshold) {
+                const taxableAmount = Math.min(income, bracket.threshold) - previousThreshold;
+                tax += taxableAmount * bracket.rate;
+                previousThreshold = bracket.threshold;
+            }
+        }
+        return tax;
+    }
+
+    // Populate the employee table
+    const tbody = document.getElementById("employeeTable").getElementsByTagName("tbody")[0];
+    tbody.innerHTML = ""; // Clear the current table rows
+
+    employees.forEach((employee, index) => {
+        const totalAllowance = personalAllowance + employee.dependents * dependentAllowance;
+        const taxableIncome = employee.salary - totalAllowance;
+        
+        // Calculate monthly tax and annual tax
+        const monthlyTax = taxableIncome > 0 ? calculateTax(taxableIncome) / 12 : 0;
+        const annualTax = monthlyTax * 12;
+
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${employee.name}</td>
+            <td>${employee.position}</td>
+            <td>${employee.salary.toLocaleString()} VND</td>
+            <td>${employee.dependents}</td>
+            <td>${monthlyTax.toLocaleString()} VND</td>
+            <td>${annualTax.toLocaleString()} VND</td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+
+
+// Hàm hiển thị danh sách nhân viên
+function displayEmployeeList() {
+    const tbody = document.getElementById("employeeTable").getElementsByTagName('tbody')[0];
+    tbody.innerHTML = ''; // Xóa dữ liệu cũ
+
+    employeeList.forEach((employee, index) => {
+        const row = tbody.insertRow();
+        row.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${employee.name}</td>
+            <td>${employee.position}</td>
+            <td>${employee.salary.toLocaleString()} VND</td>
+            <td>${employee.dependents}</td>
+            <td>${employee.monthlyTax.toLocaleString()} VND</td>
+            <td>${employee.annualTax.toLocaleString()} VND</td>
+        `;
+    });
+}
+
+// Hàm xuất dữ liệu nhân viên ra file Excel
+function exportEmployeeData() {
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet(employeeList);
+    XLSX.utils.book_append_sheet(wb, ws, "Danh sách nhân viên");
+    XLSX.writeFile(wb, "Danh_sach_nhan_vien.xlsx");
+}
+
+// Hàm xuất thông tin quyết toán thuế ra file Excel
+function exportToExcel() {
+    const annualTaxInfo = {
+        name: document.getElementById("name").value,
+        position: document.getElementById("position").value,
+        salary: parseFloat(document.getElementById("salary").value),
+        dependents: parseInt(document.getElementById("dependents").value),
+        totalAnnualTax: employeeList.reduce((acc, curr) => acc + curr.annualTax, 0)
+    };
+
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet([annualTaxInfo]);
+    XLSX.utils.book_append_sheet(wb, ws, "Quyết toán thuế");
+    XLSX.writeFile(wb, "Quyet_toan_thue_1_nam.xlsx");
+}
+
+// Hàm hiển thị thông tin quyết toán thuế cá nhân
+function displayAnnualTaxInfo() {
+    const annualTaxInfoDiv = document.getElementById("annualTaxPersonalInfo");
+    annualTaxInfoDiv.innerHTML = `
+        <p><strong>Họ và tên:</strong> ${document.getElementById("name").value}</p>
+        <p><strong>Chức vụ:</strong> ${document.getElementById("position").value}</p>
+        <p><strong>Lương hàng tháng:</strong> ${document.getElementById("salary").value}</p>
+        <p><strong>Số người phụ thuộc:</strong> ${document.getElementById("dependents").value}</p>
+        <p><strong>Tổng thuế 1 năm:</strong> ${employeeList.reduce((acc, curr) => acc + curr.annualTax, 0).toLocaleString()} VND</p>
+    `;
+}
