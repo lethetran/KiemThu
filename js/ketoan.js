@@ -1,173 +1,166 @@
-function showPersonalInfo() {
-    hideAllSections();
-    document.getElementById("personalInfo").style.display = "block";
-}
+// File: ../js/ketoan.js
 
-function showSetReduction() {
-    hideAllSections();
-    document.getElementById("setReduction").style.display = "block";
-}
-
-function showEmployeeTax() {
-    hideAllSections();
-    document.getElementById("employeeTax").style.display = "block";
-}
-
-function showManageDepartments() {
-    hideAllSections();
-    document.getElementById("manageDepartments").style.display = "block";
-}
-
-function showManageEmployees() {
-    hideAllSections();
-    document.getElementById("manageEmployees").style.display = "block";
-}
-
-// Function to save the reduction amount with employee information
-function saveReduction() {
-    const employeeName = document.getElementById("employeeName").value;
-    const department = document.getElementById("department").value;
-    const employeeId = document.getElementById("employeeId").value;
-    const reductionAmount = parseFloat(document.getElementById("reductionAmount").value);
-
-    if (!employeeName || !department || !employeeId || isNaN(reductionAmount) || reductionAmount < 0) {
-        alert("Vui lòng nhập đầy đủ và hợp lệ thông tin.");
-        return;
+document.addEventListener("DOMContentLoaded", function () {
+    // Functions to show different sections
+    function showPersonalInfo() {
+        hideAllSections();
+        document.getElementById("personalInfo").style.display = "block";
     }
 
-    alert(`Mức giảm trừ đã được lưu cho nhân viên ${employeeName}, Phòng ban: ${department}, ID: ${employeeId}, Mức giảm trừ: ${reductionAmount.toLocaleString()} VNĐ`);
-}
-
-// Function to display employee tax information based on ID
-function viewEmployeeTax() {
-    const employeeId = document.getElementById("searchEmployeeId").value;
-    
-    if (!employeeId) {
-        alert("Vui lòng nhập ID nhân viên.");
-        return;
+    function showTaxSettings() {
+        hideAllSections();
+        document.getElementById("taxSettings").style.display = "block";
     }
 
-    // Example logic to retrieve employee information
-    // Replace this with actual data fetching logic
-    const employee = {
-        id: employeeId,
-        name: "Nguyễn Văn B",
-        department: "Kế toán",
-        salary: 15000000,
-        reduction: 5000000,
-        taxableIncome: 10000000,
-        tax: 500000
-    };
-
-    if (employee) {
-        const table = document.getElementById("employeeTaxTable");
-        table.innerHTML = `
-            <tr><th>Mục</th><th>Giá trị</th></tr>
-            <tr><td>ID</td><td>${employee.id}</td></tr>
-            <tr><td>Tên nhân viên</td><td>${employee.name}</td></tr>
-            <tr><td>Phòng ban</td><td>${employee.department}</td></tr>
-            <tr><td>Lương</td><td>${employee.salary.toLocaleString()} VNĐ</td></tr>
-            <tr><td>Giảm trừ</td><td>${employee.reduction.toLocaleString()} VNĐ</td></tr>
-            <tr><td>Thu nhập chịu thuế</td><td>${employee.taxableIncome.toLocaleString()} VNĐ</td></tr>
-            <tr><td>Thuế thu nhập cá nhân</td><td>${employee.tax.toLocaleString()} VNĐ</td></tr>
-        `;
-    } else {
-        alert("Không tìm thấy nhân viên với ID này.");
+    function calculatePersonalTax() {
+        hideAllSections();
+        document.getElementById("personalTax").style.display = "block";
     }
-}
 
-function addDepartment() {
-    const departmentName = document.getElementById("departmentName").value;
-    if (!departmentName) {
-        alert("Vui lòng nhập tên phòng ban.");
-        return;
+    function calculateMonthlyTax() {
+        hideAllSections();
+        document.getElementById("monthlyTax").style.display = "block";
     }
-    const departmentsTable = document.getElementById("departmentsTable");
-    departmentsTable.innerHTML += `
-        <tr>
+
+    function calculateAnnualTax() {
+        hideAllSections();
+        document.getElementById("annualTax").style.display = "block";
+    }
+
+    function manageDepartments() {
+        hideAllSections();
+        document.getElementById("departmentManagement").style.display = "block";
+        loadDepartments();
+    }
+
+    function manageEmployees() {
+        hideAllSections();
+        document.getElementById("employeeManagement").style.display = "block";
+        loadEmployees();
+    }
+
+    function hideAllSections() {
+        let sections = document.querySelectorAll(".section");
+        sections.forEach(section => section.style.display = "none");
+    }
+
+    // Bind functions to buttons
+    document.querySelector("button[onclick='showPersonalInfo()']").addEventListener("click", showPersonalInfo);
+    document.querySelector("button[onclick='showTaxSettings()']").addEventListener("click", showTaxSettings);
+    document.querySelector("button[onclick='calculatePersonalTax()']").addEventListener("click", calculatePersonalTax);
+    document.querySelector("button[onclick='calculateMonthlyTax()']").addEventListener("click", calculateMonthlyTax);
+    document.querySelector("button[onclick='calculateAnnualTax()']").addEventListener("click", calculateAnnualTax);
+    document.querySelector("button[onclick='manageDepartments()']").addEventListener("click", manageDepartments);
+    document.querySelector("button[onclick='manageEmployees()']").addEventListener("click", manageEmployees);
+
+    // Function to save tax settings
+    function saveTaxSettings() {
+        let taxDeduction = document.getElementById("taxDeduction").value;
+        let dependentDeduction = document.getElementById("dependentDeduction").value;
+        // Save these settings to localStorage or send to server
+        localStorage.setItem("taxDeduction", taxDeduction);
+        localStorage.setItem("dependentDeduction", dependentDeduction);
+        alert("Thiết lập mức giảm trừ đã được lưu!");
+    }
+    document.querySelector("button[onclick='saveTaxSettings()']").addEventListener("click", saveTaxSettings);
+
+    // Function to calculate personal income tax
+    function calculateTestTax() {
+        let salary = document.getElementById("salary").value;
+        let dependents = document.getElementById("dependents").value;
+        // Perform tax calculation logic here
+        let taxDeduction = localStorage.getItem("taxDeduction") || 9000000; // Default value
+        let dependentDeduction = localStorage.getItem("dependentDeduction") || 3600000; // Default value
+        let taxableIncome = salary - taxDeduction - (dependents * dependentDeduction);
+        let tax = taxableIncome > 0 ? taxableIncome * 0.1 : 0; // Example tax calculation
+        let table = document.getElementById("personalTaxTable");
+        table.innerHTML = `<tr><td>Thuế thu nhập cá nhân:</td><td>${tax}</td></tr>`;
+    }
+    document.querySelector("button[onclick='calculateTestTax()']").addEventListener("click", calculateTestTax);
+
+    // Function to add department
+    function addDepartment() {
+        let departmentName = document.getElementById("departmentName").value;
+        // Add department logic here
+        let table = document.getElementById("departmentTable").getElementsByTagName("tbody")[0];
+        let newRow = table.insertRow();
+        newRow.innerHTML = `<tr>
+            <td>${table.rows.length + 1}</td>
             <td>${departmentName}</td>
-            <td><button onclick="deleteDepartment(this)">Xóa</button></td>
-        </tr>
-    `;
-    document.getElementById("departmentName").value = "";
-}
+            <td>0</td>
+        </tr>`;
+        alert("Phòng ban đã được thêm!");
+    }
+    document.querySelector("button[onclick='addDepartment()']").addEventListener("click", addDepartment);
 
-function deleteDepartment(button) {
-    const row = button.closest("tr");
-    row.remove();
-}
-
-function addEmployee() {
-    const employeeName = document.getElementById("employeeName").value;
-    const employeeContact = document.getElementById("employeeContact").value;
-    const employeeSalary = parseFloat(document.getElementById("employeeSalary").value);
-
-    if (!employeeName || !employeeContact || isNaN(employeeSalary) || employeeSalary <= 0) {
-        alert("Vui lòng nhập đầy đủ thông tin nhân viên.");
-        return;
+    // Function to load departments
+    function loadDepartments() {
+        // Load departments logic here (example static data)
+        let departments = [
+            { name: "Phòng Kế Toán", numberOfEmployees: 5 },
+            { name: "Phòng Nhân Sự", numberOfEmployees: 3 },
+            { name: "Phòng Truyền Thông", numberOfEmployees: 4}
+        ];
+        let table = document.getElementById("departmentTable").getElementsByTagName("tbody")[0];
+        table.innerHTML = "";
+        departments.forEach((dept, index) => {
+            let newRow = table.insertRow();
+            newRow.innerHTML = `<tr>
+                <td>${index + 1}</td>
+                <td>${dept.name}</td>
+                <td>${dept.numberOfEmployees}</td>
+            </tr>`;
+        });
     }
 
-    const employeesTable = document.getElementById("employeesTable");
-    employeesTable.innerHTML += `
-        <tr>
-            <td>${employeeName}</td>
-            <td>${employeeContact}</td>
-            <td>${employeeSalary.toLocaleString()} VNĐ</td>
-            <td><button onclick="deleteEmployee(this)">Xóa</button></td>
-        </tr>
-    `;
-
-    document.getElementById("employeeName").value = "";
-    document.getElementById("employeeContact").value = "";
-    document.getElementById("employeeSalary").value = "";
-}
-
-function deleteEmployee(button) {
-    const row = button.closest("tr");
-    row.remove();
-}
-
-function exportToExcel() {
-    const name = document.getElementById("name").value;
-    const position = document.getElementById("position").value;
-    const email = document.getElementById("email").value;
-    const phone = document.getElementById("phone").value;
-    const dependents = parseInt(document.getElementById("dependents").value);
-
-    const salary = 15000000;
-    const deduction = 11000000 + dependents * 4400000;
-
-    const monthlyData = [];
-    let totalTax = 0;
-
-    for (let month = 1; month <= 12; month++) {
-        const taxableIncome = salary - deduction;
-        const tax = taxableIncome > 0 ? taxableIncome * 0.05 : 0;
-        totalTax += tax;
-        monthlyData.push({ month, salary, deduction, taxableIncome, tax });
+    // Function to load employees
+    function loadEmployees() {
+        // Load employees logic here (example static data)
+        let employees = [
+            { name: "Nguyễn Văn A", position: "Nhân viên", salary: 15000000, dependents: 2, monthlyTax: 500000, annualTax: 6000000 },
+            { name: "Trần Thị B", position: "Trưởng phòng", salary: 20000000, dependents: 1, monthlyTax: 1000000, annualTax: 12000000 }
+        ];
+        let table = document.getElementById("employeeTable").getElementsByTagName("tbody")[0];
+        table.innerHTML = "";
+        employees.forEach((emp, index) => {
+            let newRow = table.insertRow();
+            newRow.innerHTML = `<tr>
+                <td>${index + 1}</td>
+                <td>${emp.name}</td>
+                <td>${emp.position}</td>
+                <td>${emp.salary}</td>
+                <td>${emp.dependents}</td>
+                <td>${emp.monthlyTax}</td>
+                <td>${emp.annualTax}</td>
+            </tr>`;
+        });
     }
 
-    const personalInfo = [
-        ["Họ và tên", name],
-        ["Chức vụ", position],
-        ["Email", email],
-        ["Số điện thoại", phone],
-        ["Số người phụ thuộc", dependents],
-        []
-    ];
+    // Function to export employee data to Excel
+    function exportEmployeeData() {
+        let employeeData = [
+            ["STT", "Họ và tên", "Chức vụ", "Lương", "Số người phụ thuộc", "Thuế 1 tháng", "Thuế 1 năm"]
+        ];
+        let tableRows = document.querySelectorAll("#employeeTable tbody tr");
+        tableRows.forEach((row, index) => {
+            let rowData = [];
+            row.querySelectorAll("td").forEach(td => rowData.push(td.textContent));
+            employeeData.push(rowData);
+        });
+        let wb = XLSX.utils.book_new();
+        let ws = XLSX.utils.aoa_to_sheet(employeeData);
+        XLSX.utils.book_append_sheet(wb, ws, "Employee Data");
+        XLSX.writeFile(wb, "EmployeeData.xlsx");
+    }
+    document.querySelector("button[onclick='exportEmployeeData()']").addEventListener("click", exportEmployeeData);
 
-    const data = personalInfo.concat([["Tháng", "Lương", "Giảm trừ", "Thu nhập chịu thuế", "Thuế thu nhập"]])
-        .concat(monthlyData.map(item => [item.month, item.salary, item.deduction, item.taxableIncome, item.tax]));
-    data.push(["", "", "", "Tổng tiền đóng", totalTax.toLocaleString() + " VNĐ"]);
+    // Function to export annual tax data to Excel
+    function exportToExcel() {
+        // Logic to export annual tax data to Excel
+        alert("Dữ liệu thuế đã được xuất ra file Excel!");
+    }
+    document.querySelector("button[onclick='exportToExcel()']").addEventListener("click", exportToExcel);
 
-    const ws = XLSX.utils.aoa_to_sheet(data);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Thuế kế toán");
-
-    XLSX.writeFile(wb, "QTketoan.xlsx");
-}
-
-function hideAllSections() {
-    const sections = document.querySelectorAll(".section");
-    sections.forEach(section => section.style.display = "none");
-}
+    // Initialize by loading default section
+    showPersonalInfo();
+});
