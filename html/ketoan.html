@@ -16,10 +16,9 @@
             <h2>Menu</h2>
             <button onclick="showPersonalInfo()">Thông tin cá nhân</button>
             <button onclick="showSetReduction()">Thiết lập mức giảm trừ</button>
-            <button onclick="showAnnualTax()">Quyết toán thuế 1 năm</button>
+            <button onclick="showEmployeeTax()">Xem thuế nhân viên</button>
             <button onclick="showManageDepartments()">Quản lý phòng ban</button>
             <button onclick="showManageEmployees()">Quản lý nhân viên</button>
-            <button onclick="showEmployeeTax()">Xem thuế nhân viên</button>
         </div>
 
         <!-- Main Content -->
@@ -50,23 +49,27 @@
             <!-- Thiết lập mức giảm trừ -->
             <div id="setReduction" class="section" style="display: none;">
                 <h2>Thiết lập mức giảm trừ cá nhân</h2>
-                <label for="employeeId">ID nhân viên:</label>
-                <input type="text" id="employeeId" placeholder="Nhập ID nhân viên">
                 <label for="employeeName">Tên nhân viên:</label>
                 <input type="text" id="employeeName" placeholder="Nhập tên nhân viên">
+
                 <label for="department">Phòng ban:</label>
-                <input type="text" id="department" placeholder="Nhập tên phòng ban">
+                <input type="text" id="department" placeholder="Nhập phòng ban">
+
+                <label for="employeeId">ID nhân viên:</label>
+                <input type="text" id="employeeId" placeholder="Nhập ID nhân viên">
+
                 <label for="reductionAmount">Mức giảm trừ:</label>
                 <input type="number" id="reductionAmount" placeholder="Nhập mức giảm trừ">
                 <button onclick="saveReduction()">Lưu</button>
             </div>
 
-            <!-- Quyết toán thuế 1 năm -->
-            <div id="annualTax" class="section" style="display: none;">
-                <h2>Quyết toán thuế thu nhập cá nhân cả năm</h2>
-                <div id="annualTaxPersonalInfo"></div>
-                <table id="annualTaxTable" class="output-table"></table>
-                <button onclick="exportToExcel()">Xuất file Excel</button>
+            <!-- Xem thuế nhân viên -->
+            <div id="employeeTax" class="section" style="display: none;">
+                <h2>Xem thuế nhân viên</h2>
+                <label for="searchEmployeeId">Nhập ID nhân viên:</label>
+                <input type="text" id="searchEmployeeId" placeholder="Nhập ID nhân viên">
+                <button onclick="viewEmployeeTax()">Xem thuế</button>
+                <table id="employeeTaxTable" class="output-table"></table>
             </div>
 
             <!-- Quản lý phòng ban -->
@@ -90,22 +93,14 @@
                 <button onclick="addEmployee()">Thêm nhân viên</button>
                 <table id="employeesTable" class="output-table"></table>
             </div>
-
-            <!-- Xem thuế nhân viên -->
-            <div id="employeeTax" class="section" style="display: none;">
-                <h2>Xem thuế nhân viên</h2>
-                <label for="searchEmployeeId">ID nhân viên:</label>
-                <input type="text" id="searchEmployeeId" placeholder="Nhập ID nhân viên">
-                <button onclick="showEmployeeTaxDetails()">Xem thuế</button>
-                <table id="employeeTaxTable" class="output-table"></table>
-            </div>
         </div>
-    </div>
 
+
+    </div>
     <!-- Footer -->
     <div class="footer">
         <p>&copy; 2024 Phenikaa University. All rights reserved.</p>
-    </div>
+    </div>    
     <script src="../js/ketoan.js"></script>
 </body>
 

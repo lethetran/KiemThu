@@ -128,8 +128,7 @@ button {
     color: #ecf0f1; /* Light text color */
     text-align: center; /* Center the text */
     padding: 20px; /* Add padding for spacing */
-    position: relative;
-    bottom: 0;
+    position: relative-bottom;
     width: 100%;
 }
 
