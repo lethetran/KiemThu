@@ -14,6 +14,7 @@
         <div class="sidebar">
             <h2>Menu</h2>
             <button onclick="showPersonalInfo()">Thông tin cá nhân</button>
+            <button onclick="showTestThue()">Tính thử thuế</button>
             <button onclick="showSalary()">Xem lương</button>
             <button onclick="calculateMonthlyTax()">Tính thuế 1 tháng</button>
             <button onclick="calculateAnnualTax()">Quyết toán thuế 1 năm</button>
@@ -46,9 +47,21 @@
                 <label for="dependents">Số người phụ thuộc:</label>
                 <input type="number" id="dependents" placeholder="Nhập số người phụ thuộc" value="0" readonly>
 
-                <button onclick="editPersonalInfo()">Edit</button>
-                <button onclick="savePersonalInfo()" style="display: none;">Save</button>
             </div>
+            <!-- Phần tính thử thuế -->
+            <div id="taxCalculation" class="section" style="display: none;">
+                <h2>Tính thử thuế</h2>
+                <label for="salary">Lương hàng tháng:</label>
+                <input type="number" id="salary" placeholder="Nhập số tiền lương">
+
+                <label for="dependent">Số người phụ thuộc:</label>
+                <input type="number" id="dependent" placeholder="Nhập số người phụ thuộc" min="0">
+
+                <button onclick="calculateTestTax()">Tính Thuế</button>
+
+                <table id="testTaxTable" class="output-table"></table>
+            </div>
+
 
             <!-- Xem lương -->
             <div id="viewSalary" class="section" style="display: none;">
