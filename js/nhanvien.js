@@ -1,3 +1,5 @@
+
+
 function showPersonalInfo() {
     hideAllSections();
     document.getElementById("personalInfo").style.display = "block";
@@ -91,20 +93,136 @@ function calculateMonthlyTax() {
     `;
 }
 
+// Hàm tính thuế cho từng tháng và quyết toán thuế cả năm
 function calculateAnnualTax() {
     hideAllSections();
     document.getElementById("annualTax").style.display = "block";
-    const deduction = 11000000 + parseInt(document.getElementById("dependents").value) * 4400000;
-    const salary = 15000000;
-    const taxableIncome = (salary - deduction) * 12;
-    const annualTax = taxableIncome > 0 ? taxableIncome * 0.05 : 0;
-    document.getElementById("annualTaxTable").innerHTML = `
-        <tr><th>Mục</th><th>Giá trị</th></tr>
-        <tr><td>Thu nhập cả năm</td><td>${(salary * 12).toLocaleString()} VNĐ</td></tr>
-        <tr><td>Giảm trừ cả năm</td><td>${(deduction * 12).toLocaleString()} VNĐ</td></tr>
-        <tr><td>Thu nhập chịu thuế</td><td>${taxableIncome.toLocaleString()} VNĐ</td></tr>
-        <tr><td>Thuế thu nhập cá nhân cả năm</td><td>${annualTax.toLocaleString()} VNĐ</td></tr>
+
+    // Lấy thông tin cá nhân
+    const name = document.getElementById("name").value;
+    const position = document.getElementById("position").value;
+    const email = document.getElementById("email").value;
+    const phone = document.getElementById("phone").value;
+    const dependents = parseInt(document.getElementById("dependents").value);
+
+    const salary = 15000000; // Giả sử lương cố định
+    const deduction = 11000000 + dependents * 4400000;
+
+    const monthlyData = [];
+    let totalAnnualTax = 0;
+
+    // Tính thuế cho từng tháng
+    for (let month = 1; month <= 12; month++) {
+        const taxableIncome = salary - deduction;
+        const monthlyTax = taxableIncome > 0 ? taxableIncome * 0.05 : 0;
+
+        totalAnnualTax += monthlyTax;
+
+        monthlyData.push({
+            month: month,
+            salary: salary,
+            deduction: deduction,
+            taxableIncome: taxableIncome,
+            monthlyTax: monthlyTax
+        });
+    }
+
+    // Hiển thị thông tin cá nhân
+    let personalInfoContent = `
+        <p><strong>Họ và tên:</strong> ${name}</p>
+        <p><strong>Chức vụ:</strong> ${position}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Số điện thoại:</strong> ${phone}</p>
+        <p><strong>Số người phụ thuộc:</strong> ${dependents}</p>
     `;
+
+    // Hiển thị bảng thuế hàng tháng
+    let tableContent = `
+        <tr><th>Tháng</th><th>Lương</th><th>Giảm trừ</th><th>Thu nhập chịu thuế</th><th>Thuế thu nhập</th></tr>
+    `;
+    
+    monthlyData.forEach(data => {
+        tableContent += `
+            <tr>
+                <td>${data.month}</td>
+                <td>${data.salary.toLocaleString()} VNĐ</td>
+                <td>${data.deduction.toLocaleString()} VNĐ</td>
+                <td>${data.taxableIncome.toLocaleString()} VNĐ</td>
+                <td>${data.monthlyTax.toLocaleString()} VNĐ</td>
+            </tr>
+        `;
+    });
+
+    // Tổng thuế
+    tableContent += `
+        <tr><td colspan="4">Tổng thuế thu nhập cá nhân cả năm</td><td>${totalAnnualTax.toLocaleString()} VNĐ</td></tr>
+    `;
+
+    // Chèn thông tin cá nhân và bảng thuế vào trang
+    document.getElementById("annualTaxPersonalInfo").innerHTML = personalInfoContent;
+    document.getElementById("annualTaxTable").innerHTML = tableContent;
+}
+
+
+function exportToExcel() {
+    // Lấy thông tin cá nhân
+    const name = document.getElementById("name").value;
+    const position = document.getElementById("position").value;
+    const email = document.getElementById("email").value;
+    const phone = document.getElementById("phone").value;
+    const dependents = parseInt(document.getElementById("dependents").value);
+
+    // Tính toán giảm trừ
+    const salary = 15000000; // Lương cố định
+    const deduction = 11000000 + dependents * 4400000;
+
+    // Dữ liệu thuế mỗi tháng
+    const monthlyData = [];
+    let totalTax = 0; // Biến để tính tổng thuế
+
+    for (let month = 1; month <= 12; month++) {
+        const taxableIncome = salary - deduction;
+        const tax = taxableIncome > 0 ? taxableIncome * 0.05 : 0;
+
+        // Cộng dồn tổng thuế
+        totalTax += tax;
+
+        monthlyData.push({
+            "Tháng": month,
+            "Lương": salary,
+            "Giảm trừ": deduction,
+            "Thu nhập chịu thuế": taxableIncome,
+            "Thuế thu nhập": tax
+        });
+    }
+
+    // Dữ liệu cá nhân
+    const personalInfo = [
+        ["Họ và tên", name],
+        ["Chức vụ", position],
+        ["Email", email],
+        ["Số điện thoại", phone],
+        ["Số người phụ thuộc", dependents],
+        []
+    ];
+
+    // Dữ liệu thuế hàng tháng
+    const data = personalInfo.concat([["Mục", "Giá trị"]]).concat(monthlyData.map(item => {
+        return [item["Tháng"], item["Lương"], item["Giảm trừ"], item["Thu nhập chịu thuế"], item["Thuế thu nhập"]];
+    }));
+
+    // Thêm dòng "Tổng tiền đóng"
+    data.push(["", "", "", "Tổng tiền đóng", totalTax.toLocaleString() + " VNĐ"]);
+
+    // Tạo sheet từ dữ liệu
+    const ws = XLSX.utils.aoa_to_sheet(data);
+
+    // Tạo workbook và thêm sheet
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Thuế nhân viên");
+
+    // Xuất file Excel
+    XLSX.writeFile(wb, "QTnhanvien.xlsx");
 }
 
 function hideAllSections() {

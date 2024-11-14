@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Phần mềm tính thuế thu nhập cá nhân</title>
     <link rel="stylesheet" href="../css/nhanvien.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
 </head>
 
 <body>
@@ -78,9 +79,19 @@
             <!-- Quyết toán thuế 1 năm -->
             <div id="annualTax" class="section" style="display: none;">
                 <h2>Quyết toán thuế thu nhập cá nhân cả năm</h2>
+                <div id="annualTaxPersonalInfo"></div> <!-- Thông tin cá nhân sẽ hiển thị ở đây -->
                 <table id="annualTaxTable" class="output-table"></table>
+                <!-- Nút xuất file Excel -->
+                <button onclick="exportToExcel()">Xuất file Excel</button>
             </div>
+
         </div>
+        
+        <!--Footer-->
+        
+    </div>
+    <div class="footer">
+        <p>&copy; 2024 Phenikaa University. All rights reserved.</p>
     </div>
     <script src="../js/nhanvien.js"></script>
 </body>
