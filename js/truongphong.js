@@ -1,4 +1,14 @@
 
+function logout() {
+    console.log("Logging out...");
+    // Xóa thông tin đăng nhập (nếu có dùng sessionStorage hoặc localStorage)
+    sessionStorage.clear();
+    localStorage.clear();
+
+    // Điều hướng về trang đăng nhập hoặc hiển thị thông báo đăng xuất
+    alert("Bạn đã đăng xuất thành công!");
+    window.location.href = "../index.html"; // Giả sử trang đăng nhập là login.html
+}
 
 function showPersonalInfo() {
     hideAllSections();

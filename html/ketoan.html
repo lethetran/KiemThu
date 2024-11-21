@@ -27,6 +27,7 @@
                 <h1>Phần mềm tính thuế thu nhập cá nhân - Kế toán</h1>
                 <div class="login-role">
                     <span>Đăng nhập: <strong>Kế toán</strong></span>
+                    <button onclick="logout()" class="logout-button">Đăng xuất</button>
                 </div>
             </div>
 
@@ -50,13 +51,13 @@
             <div id="setReduction" class="section" style="display: none;">
                 <h2>Thiết lập mức giảm trừ cá nhân</h2>
                 <label for="employeeName">Tên nhân viên:</label>
-                <input type="text" id="employeeName" placeholder="Nhập tên nhân viên">
+                <input type="text" id="employeeName" value="Nguyễn Văn A">
 
                 <label for="department">Phòng ban:</label>
-                <input type="text" id="department" placeholder="Nhập phòng ban">
+                <input type="text" id="department" value="Nhân viên">
 
                 <label for="employeeId">ID nhân viên:</label>
-                <input type="text" id="employeeId" placeholder="Nhập ID nhân viên">
+                <input type="text" id="employeeId" value="0123">
 
                 <label for="dependents">Số người phụ thuộc:</label>
                 <input type="number" id="dependents" placeholder="Nhập số người phụ thuộc">
@@ -121,11 +122,6 @@
             </div>            
         </div>
     </div>
-    <!-- Footer -->
-    <div class="footer">
-        <p>&copy; 2024 Phenikaa University. All rights reserved.</p>
-    </div>
     <script src="../js/ketoan.js"></script>
-</body>
-
+</body> 
 </html>
