@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Đăng Nhập</title>
   <link rel="stylesheet" href="./css/styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
 </head>
 <body>
   <div class="header">
@@ -14,15 +15,18 @@
   
   <div class="login-container">
     <h2>Đăng Nhập</h2>
-    <input type="text" id="username" placeholder="Tài khoản">
-    <input type="password" id="password" placeholder="Mật khẩu">
-    
-    <div class="remember-me">
-      <input type="checkbox" id="rememberMe">
-      <label for="rememberMe">Lưu thông tin đăng nhập</label>
-    </div>
+    <!-- Thêm thẻ form để bao bọc các trường nhập -->
+    <form id="loginForm" onsubmit="login(); return false;">
+      <input type="text" id="username" placeholder="Tài khoản" required autofocus>
+      <input type="password" id="password" placeholder="Mật khẩu" required>
 
-    <button onclick="login()">Đăng Nhập</button>
+      <div class="remember-me">
+        <input type="checkbox" id="rememberMe">
+        <label for="rememberMe">Lưu thông tin đăng nhập</label>
+      </div>
+
+      <button type="submit">Đăng Nhập</button>
+    </form>
   </div>
   
   <div class="footer">
