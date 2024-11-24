@@ -56,8 +56,8 @@ function logout() {
 }
 
 function calculateTestTax() {
-    const salary = parseFloat(document.getElementById("salary").value);
-    const dependents = parseInt(document.getElementById("dependent").value);
+    const salary = parseFloat(document.getElementById("salary1").value);
+    const dependents = parseInt(document.getElementById("dependent1").value);
 
     if (isNaN(salary) || isNaN(dependents)) {
         alert("Vui lòng nhập đầy đủ và chính xác thông tin!");
@@ -138,6 +138,9 @@ function calculateMonthlyTax() {
                 <th>Tổng thu nhập chịu thuế</th>
                 <td>${taxableIncome.toFixed(2)} VND</td>
             </tr>
+            <tr>
+                <th>Thuế thu nhập cá nhân</th>
+                <td>${taxAmount.toFixed(2)} VND</td>
         </table>
     `;
 }
