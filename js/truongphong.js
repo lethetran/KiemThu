@@ -13,7 +13,7 @@ window.onload = function () {
     document.getElementById("position").value = user.position || "";
     document.getElementById("email").value = user.email || "";
     document.getElementById("phone").value = user.phone || "";
-    document.getElementById("dependents").value = user.dependents || "";
+    document.getElementById("dependents").value = user.dependents || "0";
     document.getElementById("salary").value = user.salary || "";
 
     // Cập nhật vai trò trong tiêu đề
@@ -121,7 +121,8 @@ function calculateTestTax() {
 
 function calculateMonthlyTax() {
     const salary = parseFloat(document.getElementById("salary").value);
-    const dependents = parseInt(document.getElementById("dependents").value);
+    const dependentsInput = document.getElementById("dependents").value;
+    const dependents = parseInt(dependentsInput) || 0; // Mặc định là 0 nếu không nhập hoặc nhập sai
     const name = document.getElementById("name").value;
     const position = document.getElementById("position").value;
     const email = document.getElementById("email").value;
@@ -201,7 +202,8 @@ function calculateMonthlyTax() {
 
 function calculateAnnualTax() {
     const salary = parseFloat(document.getElementById("salary").value);
-    const dependents = parseInt(document.getElementById("dependents").value);
+    const dependentsInput = parseInt(document.getElementById("dependents").value);
+    const dependents = parseInt(dependentsInput) || 0; // Mặc định là 0 nếu không nhập hoặc nhập sai
     const name = document.getElementById("name").value;
     const position = document.getElementById("position").value;
     const email = document.getElementById("email").value;
@@ -288,57 +290,57 @@ function employeeList() {
 
     // Đọc tệp Excel và xử lý dữ liệu
     fetch(url)
-    .then(response => response.arrayBuffer())  // Lấy dữ liệu tệp Excel dưới dạng binary array
-    .then(data => {
-        const workbook = XLSX.read(data, { type: 'array' });  // Đọc dữ liệu tệp Excel
-        const sheet = workbook.Sheets[workbook.SheetNames[0]];  // Lấy bảng đầu tiên trong tệp
-        const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 }); // Chuyển đổi bảng Excel thành mảng dữ liệu 2D
+        .then(response => response.arrayBuffer())  // Lấy dữ liệu tệp Excel dưới dạng binary array
+        .then(data => {
+            const workbook = XLSX.read(data, { type: 'array' });  // Đọc dữ liệu tệp Excel
+            const sheet = workbook.Sheets[workbook.SheetNames[0]];  // Lấy bảng đầu tiên trong tệp
+            const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 }); // Chuyển đổi bảng Excel thành mảng dữ liệu 2D
 
-        let monthlyTaxDetails = '';  // Biến để lưu chi tiết thuế của các nhân viên
-        
-        // Duyệt qua từng nhân viên và tính thuế
-        for (let i = 1; i < jsonData.length; i++) {  // Bắt đầu từ hàng thứ 2 (hàng đầu là tiêu đề)
-            const row = jsonData[i];  // Mỗi dòng dữ liệu của nhân viên
-            const name = row[1];  // Cột B là tên nhân viên
-            const position = row[2];  // Cột C là chức vụ
-            const email = row[5];  // Cột F là email
-            const phone = row[4];  // Cột E là số điện thoại
-            const salary = row[3];  // Cột D là lương hàng tháng
-            const dependents = row[6];  // Cột G là số người phụ thuộc
+            let monthlyTaxDetails = '';  // Biến để lưu chi tiết thuế của các nhân viên
 
-            // Tính thuế thu nhập cá nhân (theo biểu thuế lũy tiến)
-            const exemptionForSelf = 11000000; // Giảm trừ gia cảnh cho bản thân (11 triệu đồng)
-            const exemptionPerDependent = 4400000; // Giảm trừ cho mỗi người phụ thuộc (4 triệu đồng)
+            // Duyệt qua từng nhân viên và tính thuế
+            for (let i = 1; i < jsonData.length; i++) {  // Bắt đầu từ hàng thứ 2 (hàng đầu là tiêu đề)
+                const row = jsonData[i];  // Mỗi dòng dữ liệu của nhân viên
+                const name = row[1];  // Cột B là tên nhân viên
+                const position = row[2];  // Cột C là chức vụ
+                const email = row[5];  // Cột F là email
+                const phone = row[4];  // Cột E là số điện thoại
+                const salary = row[3];  // Cột D là lương hàng tháng
+                const dependents = row[6];  // Cột G là số người phụ thuộc
 
-            // Tính tổng giảm trừ và thu nhập tính thuế
-            const totalExemption = exemptionForSelf + (exemptionPerDependent * dependents);
-            const taxableIncome = salary - totalExemption;
+                // Tính thuế thu nhập cá nhân (theo biểu thuế lũy tiến)
+                const exemptionForSelf = 11000000; // Giảm trừ gia cảnh cho bản thân (11 triệu đồng)
+                const exemptionPerDependent = 4400000; // Giảm trừ cho mỗi người phụ thuộc (4 triệu đồng)
 
-            let tax = 0;  // Biến lưu thuế phải nộp
-            if(taxableIncome <= 0) {
-                tax = 0;  // Không phải nộp thuế nếu thu nhập âm hoặc bằng 0
-            }else {
+                // Tính tổng giảm trừ và thu nhập tính thuế
+                const totalExemption = exemptionForSelf + (exemptionPerDependent * dependents);
+                const taxableIncome = salary - totalExemption;
 
-            // Áp dụng biểu thuế lũy tiến để tính thuế
-            if (taxableIncome <= 5000000) {
-                tax = taxableIncome * 0.05;  // Thuế suất 5% nếu thu nhập dưới 5 triệu
-            } else if (taxableIncome <= 10000000) {
-                tax = taxableIncome * 0.1 - 250000;  // Thuế suất 10% nếu thu nhập từ 5 triệu đến 10 triệu
-            } else if (taxableIncome <= 18000000) {
-                tax = taxableIncome * 0.15 - 750000;  // Thuế suất 15% nếu thu nhập từ 10 triệu đến 18 triệu
-            } else if (taxableIncome <= 32000000) {
-                tax = taxableIncome * 0.2 - 1650000;  // Thuế suất 20% nếu thu nhập từ 18 triệu đến 32 triệu
-            } else if (taxableIncome <= 52000000) {
-                tax = taxableIncome * 0.25 - 3250000;  // Thuế suất 25% nếu thu nhập từ 32 triệu đến 52 triệu
-            } else if (taxableIncome <= 80000000) {
-                tax = taxableIncome * 0.3 - 5850000;  // Thuế suất 30% nếu thu nhập từ 52 triệu đến 80 triệu
-            } else {
-                tax = taxableIncome * 0.35 - 9850000;  // Thuế suất 35% nếu thu nhập trên 80 triệu
-            }
-        }
+                let tax = 0;  // Biến lưu thuế phải nộp
+                if (taxableIncome <= 0) {
+                    tax = 0;  // Không phải nộp thuế nếu thu nhập âm hoặc bằng 0
+                } else {
 
-            // Thêm thông tin nhân viên và thuế tính được vào bảng chi tiết
-            monthlyTaxDetails += `
+                    // Áp dụng biểu thuế lũy tiến để tính thuế
+                    if (taxableIncome <= 5000000) {
+                        tax = taxableIncome * 0.05;  // Thuế suất 5% nếu thu nhập dưới 5 triệu
+                    } else if (taxableIncome <= 10000000) {
+                        tax = taxableIncome * 0.1 - 250000;  // Thuế suất 10% nếu thu nhập từ 5 triệu đến 10 triệu
+                    } else if (taxableIncome <= 18000000) {
+                        tax = taxableIncome * 0.15 - 750000;  // Thuế suất 15% nếu thu nhập từ 10 triệu đến 18 triệu
+                    } else if (taxableIncome <= 32000000) {
+                        tax = taxableIncome * 0.2 - 1650000;  // Thuế suất 20% nếu thu nhập từ 18 triệu đến 32 triệu
+                    } else if (taxableIncome <= 52000000) {
+                        tax = taxableIncome * 0.25 - 3250000;  // Thuế suất 25% nếu thu nhập từ 32 triệu đến 52 triệu
+                    } else if (taxableIncome <= 80000000) {
+                        tax = taxableIncome * 0.3 - 5850000;  // Thuế suất 30% nếu thu nhập từ 52 triệu đến 80 triệu
+                    } else {
+                        tax = taxableIncome * 0.35 - 9850000;  // Thuế suất 35% nếu thu nhập trên 80 triệu
+                    }
+                }
+
+                // Thêm thông tin nhân viên và thuế tính được vào bảng chi tiết
+                monthlyTaxDetails += `
                 <tr>
                     <td>${i}</td>
                     <td>${name}</td>
@@ -349,11 +351,11 @@ function employeeList() {
                     <td>${dependents}</td>
                     <td>${tax.toFixed(2)}</td>  
             `;
-        }
-        
-        // Hiển thị kết quả lên giao diện web trong một bảng HTML
-        const resultTable = document.getElementById("employee-list-table");  // Lấy phần tử bảng trong HTML
-        resultTable.innerHTML = ` 
+            }
+
+            // Hiển thị kết quả lên giao diện web trong một bảng HTML
+            const resultTable = document.getElementById("employee-list-table");  // Lấy phần tử bảng trong HTML
+            resultTable.innerHTML = ` 
             <table class="output-table1">
                 <tr>
                     <th>STT</th>
@@ -368,10 +370,10 @@ function employeeList() {
                 ${monthlyTaxDetails}  
             </table>
         `;
-    })
-    .catch(error => {
-        console.error('Error loading Excel file:', error);  // Xử lý lỗi nếu có khi đọc tệp Excel
-    });
+        })
+        .catch(error => {
+            console.error('Error loading Excel file:', error);  // Xử lý lỗi nếu có khi đọc tệp Excel
+        });
 }
 function exportToExcel2() {
     const table = document.getElementById("employee-list-table");  // Lấy bảng dữ liệu thuế
