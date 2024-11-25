@@ -347,25 +347,23 @@ function employeeList() {
                     <td>${phone}</td>
                     <td>${salary}</td>
                     <td>${dependents}</td>
-                    <td>${tax.toFixed(2)}</td>  <!-- Hiển thị thuế tính được, làm tròn đến 2 chữ số thập phân -->
-                </tr>
+                    <td>${tax.toFixed(2)}</td>  
             `;
         }
         
         // Hiển thị kết quả lên giao diện web trong một bảng HTML
         const resultTable = document.getElementById("employee-list-table");  // Lấy phần tử bảng trong HTML
         resultTable.innerHTML = ` 
-            <h3>Kết quả tính thuế hàng tháng</h3>  <!-- Tiêu đề bảng -->
             <table class="output-table1">
                 <tr>
-                    <th>Số thứ tự</th>
+                    <th>STT</th>
                     <th>Họ và tên</th>
                     <th>Chức vụ</th>
                     <th>Email</th>
                     <th>Số điện thoại</th>
                     <th>Lương hàng tháng</th>
-                    <th>Số người phụ thuộc</th>
-                    <th>Thuế thu nhập cá nhân</th>
+                    <th>NPT</th>
+                    <th>Thuế TNCN</th>
                 </tr>
                 ${monthlyTaxDetails}  
             </table>
