@@ -16,7 +16,8 @@ body {
     background-color: #ff6700;
     color: white;
     padding: 20px;
-    height: 100vh;
+    min-height: 100vh;
+    height: auto;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
 }
 

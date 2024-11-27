@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Phần mềm tính thuế thu nhập cá nhân - Kế toán</title>
+    <title>Phần mềm tính thuế thu nhập cá nhân</title>
     <link rel="stylesheet" href="../css/ketoan.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
 </head>
@@ -28,7 +28,7 @@
         <!-- Main Content -->
         <div class="main-content">
             <div class="header">
-                <h1>Phần mềm tính thuế thu nhập cá nhân - Kế toán</h1>
+                <h1>Phần mềm tính thuế thu nhập cá nhân</h1>
                 <div class="login-role">
                     <span id="user-role"><strong></strong></span>
                 </div>
@@ -147,40 +147,43 @@
                 <h2>Quản lý phòng ban</h2>
                 <label for="departmentName">Tên phòng ban:</label>
                 <input type="text" id="departmentName" placeholder="Nhập tên phòng ban">
-                <button onclick="addDepartment()">Thêm phòng ban</button>
-                <table id="departmentsTable" class="output-table">
-                    <thead>
-                        <tr>
-                            <th>Tên phòng ban</th>
-                            <th>Hành động</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
+                <label for="position">Chức vụ trưởng phòng:</label>
+                <input type="text" id="departmentHead" placeholder="Nhập chức vụ trưởng phòng">
+                <label for="email">Email:</label>
+                <input type="email" id="departmentEmail" placeholder="Nhập email">
+                <label for="phone">Số điện thoại:</label>
+                <input type="tel" id="departmentPhone" placeholder="Nhập số điện thoại">
+                <button id="addDepartmentButton" onclick="addDepartment()">Thêm phòng ban</button>
+
+                <table id="department-list-table" class="output-table">
+                    <!-- Dữ liệu sẽ được hiển thị ở đây -->
                 </table>
             </div>
 
             <!-- Quản lý nhân viên -->
-            <div id="manageEmployees" class="section" style="display: none;">
-                <h2>Quản lý nhân viên</h2>
-                <label for="employeeName">Tên nhân viên:</label>
-                <input type="text" id="employeeName" placeholder="Nhập tên nhân viên">
-                <label for="employeeContact">Thông tin liên lạc:</label>
-                <input type="text" id="employeeContact" placeholder="Nhập thông tin liên lạc">
-                <label for="employeeSalary">Lương:</label>
-                <input type="number" id="employeeSalary" placeholder="Nhập lương">
+            <div id="employeeList" class="section" style="display: none;">
+                
+                <h2>Quản Lý nhân viên</h2>
+                <label for="employeeId">ID nhân viên:</label>
+                <input type="text" id="employeeId" placeholder="Nhập ID nhân viên">
+                <label for="employeeName">Họ tên:</label>
+                <input type="text" id="employeeName" placeholder="Nhập họ tên">
+                <label for="employeePosition">Chức vụ:</label>
+                <input type="text" id="employeePosition" placeholder="Nhập chức vụ">
+                <label for="employeeEmail">Email:</label>
+                <input type="email" id="employeeEmail" placeholder="Nhập email">
+                <label for="employeePhone">Số điện thoại:</label>
+                <input type="tel" id="employeePhone" placeholder="Nhập số điện thoại">
+                <label for="employeeDepartment">Phòng ban:</label>
+                <select id="PosittonSelect" onchange="loadRole()">
+                    <!-- Các tùy chọn năm sẽ được tạo động -->
+                </select>
                 <button onclick="addEmployee()">Thêm nhân viên</button>
-                <table id="employeesTable" class="output-table">
-                    <thead>
-                        <tr>
-                            <th>Tên nhân viên</th>
-                            <th>Thông tin liên lạc</th>
-                            <th>Lương</th>
-                            <th>Hành động</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
+                <table id="employee-list-table" class="output-table">
+                    <!-- Dữ liệu sẽ được hiển thị ở đây -->
                 </table>
-            </div>            
+                <button onclick="exportToExcel2()">Xuất ra Excel</button>
+            </div>           
         </div>
     </div>
     <div class="footer">

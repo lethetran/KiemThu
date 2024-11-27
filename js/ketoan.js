@@ -46,10 +46,6 @@ function showEmployeeTax() {
     toggleSection("employeeTax");
 }
 
-function showEmployeeList() {
-    toggleSection("employeeList");
-    employeeList();
-}
 
 function toggleSection(sectionId) {
     const sections = document.querySelectorAll(".section");
@@ -101,7 +97,7 @@ function viewEmployeeTax() {
                     const totalExemption = exemptionForSelf + (exemptionPerDependent * dependents);
                     const taxableIncome = salary - totalExemption;
 
-                    if(taxableIncome <= 0) {
+                    if (taxableIncome <= 0) {
                         tax = 0;  // Không phải nộp thuế nếu thu nhập âm hoặc bằng 0
                     } else {
                         // Áp dụng biểu thuế lũy tiến để tính thuế
@@ -244,58 +240,7 @@ function calculateTestTax() {
     </tr>
     `;
 }
-
-function saveReduction() {
-    const IDuser = parseInt(document.getElementById("employeeId2").value);
-    const salary = parseFloat(document.getElementById("salary2").value);
-    const dependents = parseInt(document.getElementById("dependents2").value);
-
-    if (isNaN(salary) || isNaN(dependents) || isNaN(IDuser)) {
-        alert("Vui lòng nhập đầy đủ và chính xác thông tin!");
-        return;
-    }
-
-    // Đường dẫn đến file Excel
-    const filePath = '../excel_data/data_tt.xlsx';
-
-    try {
-        // Đọc file Excel
-        const workbook = XLSX.readFile(filePath);
-        const sheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[sheetName];
-
-        // Chuyển sheet thành JSON
-        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-
-        // Tìm và cập nhật dòng chứa IDuser
-        let updated = false;
-        for (let i = 1; i < jsonData.length; i++) {
-            if (jsonData[i][0] === IDuser) { // IDuser ở cột A (index 0)
-                jsonData[i][3] = salary;     // Lương ở cột D (index 3)
-                jsonData[i][6] = dependents; // Người phụ thuộc ở cột G (index 6)
-                updated = true;
-                break;
-            }
-        }
-
-        if (!updated) {
-            alert("Không tìm thấy ID nhân viên!");
-            return;
-        }
-
-        // Ghi lại dữ liệu vào sheet
-        const newSheet = XLSX.utils.aoa_to_sheet(jsonData);
-        workbook.Sheets[sheetName] = newSheet;
-
-        // Ghi lại file Excel
-        XLSX.writeFile(workbook, filePath);
-        alert("Dữ liệu đã được cập nhật thành công!");
-    } catch (error) {
-        console.error("Lỗi khi đọc hoặc ghi file Excel:", error);
-        alert("Đã xảy ra lỗi khi cập nhật file Excel.");
-    }
-}
-
+//tính thuế 1 năm
 function calculateMonthlyTax() {
     const salary = parseFloat(document.getElementById("salary").value);
     const dependents = parseInt(document.getElementById("dependents").value);
@@ -304,10 +249,7 @@ function calculateMonthlyTax() {
     const email = document.getElementById("email").value;
     const phone = document.getElementById("phone").value;
 
-    if (isNaN(salary) || isNaN(dependents)) {
-        alert("Vui lòng nhập đầy đủ và chính xác thông tin!");
-        return;
-    }
+
 
     const exemptionForSelf = 11000000; // Giảm trừ gia cảnh cho bản thân
     const exemptionPerDependent = 4400000; // Giảm trừ cho mỗi người phụ thuộc
@@ -389,7 +331,7 @@ function calculateMonthlyTax() {
         <p><strong>Giải thích:</strong> Thuế thu nhập cá nhân được tính theo biểu thuế lũy tiến từng phần dựa trên thu nhập chịu thuế.</p>
     `;
 }
-
+//tính thuế 1 năm cho tất cả
 function loadAnnualTax() {
     const selectedYear = document.getElementById("yearSelect").value; // Lấy năm từ dropdown
     const filePath = '../excel_data/data_tt.xlsx';
@@ -450,7 +392,7 @@ function loadAnnualTax() {
             alert("Không thể tải dữ liệu thuế.");
         });
 }
-
+//tính thuế
 function calculateAnnualTax(salary, dependents) {
     const exemptionForSelf = 11000000; // Giảm trừ bản thân
     const exemptionPerDependent = 4400000; // Giảm trừ mỗi người phụ thuộc
@@ -481,7 +423,7 @@ function calculateAnnualTax(salary, dependents) {
 
     return taxAmount;
 }
-
+//tải dữ liệu thuế theo năm
 function populateYearSelect() {
     const filePath = '../excel_data/data_tt.xlsx';
 
@@ -520,11 +462,10 @@ function populateYearSelect() {
             alert("Không thể tải danh sách năm.");
         });
 }
-
+//tải dữ liệu thuế theo năm
 document.addEventListener("DOMContentLoaded", () => {
     populateYearSelect(); // Tạo danh sách năm
 });
-
 
 function exportToExcel() {
     const table = document.getElementById("annual-tax-table");
@@ -558,7 +499,7 @@ function loadEmployeeTaxes() {
                 const id = row[0];
                 const name = row[1];
                 const position = row[2];
-                const salary = row[3]; 
+                const salary = row[3];
                 const dependents = row[6];
 
                 const tax = calculateTax(salary, dependents); // Tính thuế cho nhân viên
@@ -621,8 +562,245 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function showManageDepartments() {
     toggleSection("manageDepartments");
+    loadDepartments();
+}
+function loadDepartments() {
+    const url = '../excel_data/data_tt.xlsx';  // Đường dẫn đến tệp Excel chứa dữ liệu nhân viên
+
+    // Đọc tệp Excel và xử lý dữ liệu
+    fetch(url)
+        .then(response => response.arrayBuffer())  // Lấy dữ liệu tệp Excel dưới dạng binary array
+        .then(data => {
+            const workbook = XLSX.read(data, { type: 'array' });  // Đọc dữ liệu tệp Excel
+            const sheet = workbook.Sheets[workbook.SheetNames[0]];  // Lấy bảng đầu tiên trong tệp
+            const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 }); // Chuyển đổi bảng Excel thành mảng dữ liệu 2D
+
+            let monthlyTaxDetails = '';  // Biến để lưu chi tiết thuế của các nhân viên
+
+            // Duyệt qua từng nhân viên và tính thuế
+            for (let i = 1; i < jsonData.length; i++) {  // Bắt đầu từ hàng thứ 2 (hàng đầu là tiêu đề)
+                const row = jsonData[i];  // Mỗi dòng dữ liệu của nhân viên
+                const name = row[1];  // Cột B là tên nhân viên
+                const position = row[2];  // Cột C là chức vụ
+                const email = row[5];  // Cột F là email
+                const phone = row[4];  // Cột E là số điện thoại
+                // const salary = row[3];  // Cột D là lương hàng tháng
+                // const dependents = row[6];  // Cột G là số người phụ thuộc
+                // const year = row[8];  // Cột I là năm
+                const role = row[9];  // Cột J là vai trò
+
+                // Thêm thông tin nhân viên và thuế tính được vào bảng chi tiết
+                if(position === "Trưởng phòng" || name === "Trần Văn An"){
+                    monthlyTaxDetails += `
+                <tr>
+                    <td>Phòng ${role}</td>
+                    <td>${name}</td>
+                    <td>${email}</td>
+                    <td>${phone}</td>
+                    <td><button class="edit-btn" onclick="editDepartment(this)">Sửa</button></td>
+                    <td><button class="delete-btn" onclick="deleteDepartment(this)">Xóa</button></td>
+                        
+                </tr>
+            `;
+                }
+                
+            }
+
+            // Hiển thị kết quả lên giao diện web trong một bảng HTML
+            const resultTable = document.getElementById("department-list-table");  // Lấy phần tử bảng trong HTML
+            resultTable.innerHTML = ` 
+            <table class="output-table1">
+                <tr>
+                    <th>Phòng ban</th>
+                    <th>Trường Phòng</th>
+                    <th>Email</th>
+                    <th>Số điện thoại</th>
+                    <th>Chỉnh sửa</th>
+                    <th>Xóa</th>
+
+                </tr>
+                ${monthlyTaxDetails}  
+            </table>
+        `;
+        })
+        .catch(error => {
+            console.error('Error loading Excel file:', error);  // Xử lý lỗi nếu có khi đọc tệp Excel
+        });
+}
+// Xóa và chỉnh sửa phòng ban
+function deleteDepartment(button) {
+    const row = button.parentElement.parentElement;  // Lấy hàng chứa nút "Xóa"
+    row.remove();  // Xóa hàng khỏi bảng
+}
+// Chỉnh sửa phòng ban
+function editDepartment(button) {
+    const row = button.parentElement.parentElement;  // Lấy hàng chứa nút "Sửa"
+    
+    // Lấy các giá trị từ dòng hiện tại
+    const departmentName = row.cells[0].textContent;
+    const departmentHead = row.cells[1].textContent;
+    const departmentEmail = row.cells[2].textContent;
+    const departmentPhone = row.cells[3].textContent;
+
+    // Đưa các giá trị vào các trường input để chỉnh sửa
+    document.getElementById("departmentName").value = departmentName;
+    document.getElementById("departmentHead").value = departmentHead;
+    document.getElementById("departmentEmail").value = departmentEmail;
+    document.getElementById("departmentPhone").value = departmentPhone;
+
+    // Cập nhật nút "Thêm" thành "Cập nhật" và gán hành động chỉnh sửa cho nó
+    const addButton = document.getElementById("addDepartmentButton");
+    addButton.textContent = "Cập nhật";
+    addButton.setAttribute("onclick", `updateDepartment(this, ${row.rowIndex})`);  // Chuyển `row` vào hàm update
+}
+// Cập nhật phòng ban
+function updateDepartment(button, rowIndex) {
+    const departmentName = document.getElementById("departmentName").value.trim();
+    const departmentHead = document.getElementById("departmentHead").value.trim();
+    const departmentEmail = document.getElementById("departmentEmail").value.trim();
+    const departmentPhone = document.getElementById("departmentPhone").value.trim();
+
+    // Kiểm tra tính hợp lệ
+    if (!departmentName || !departmentHead || !departmentEmail || !departmentPhone) {
+        alert("Vui lòng nhập đầy đủ thông tin!");
+        return;
+    }
+
+    // Lấy bảng và dòng cần cập nhật
+    const resultTable = document.getElementById("department-list-table").querySelector("table tbody");
+    const row = resultTable.rows[rowIndex];  // Dùng `rowIndex` để tìm dòng đúng
+
+    // Cập nhật thông tin trong bảng
+    row.cells[0].textContent = departmentName;
+    row.cells[1].textContent = departmentHead;
+    row.cells[2].textContent = departmentEmail;
+    row.cells[3].textContent = departmentPhone;
+
+    // Reset form và đổi nút lại thành "Thêm"
+    document.getElementById("departmentName").value = "";
+    document.getElementById("departmentHead").value = "";
+    document.getElementById("departmentEmail").value = "";
+    document.getElementById("departmentPhone").value = "";
+
+    button.textContent = "Thêm phòng ban";
+    button.setAttribute("onclick", "addDepartment()");  // Đổi lại hành động của nút
+}
+// Thêm phòng ban
+function addDepartment() {
+    // Lấy giá trị từ các trường input
+    const departmentName = document.getElementById("departmentName").value.trim();
+    const departmentHead = document.getElementById("departmentHead").value.trim();
+    const departmentEmail = document.getElementById("departmentEmail").value.trim();
+    const departmentPhone = document.getElementById("departmentPhone").value.trim();
+
+    // Kiểm tra tính hợp lệ
+    if (!departmentName || !departmentHead || !departmentEmail || !departmentPhone) {
+        alert("Vui lòng nhập đầy đủ thông tin!");
+        return;
+    }
+
+    // Lấy bảng hiện tại
+    const resultTable = document.getElementById("department-list-table");
+    const tableBody = resultTable.querySelector("table > tbody");
+
+    // Nếu chưa có bảng hoặc `tbody`, tạo mới
+    if (!tableBody) {
+        resultTable.innerHTML = `
+            <table class="output-table1">
+                <thead>
+                    <tr>
+                        <th>Tên phòng ban</th>
+                        <th>Chức vụ trưởng phòng</th>
+                        <th>Email</th>
+                        <th>Số điện thoại</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>`;
+    }
+
+    // Cập nhật bảng hiện tại
+    const updatedTableBody = resultTable.querySelector("table > tbody");
+    const newRow = document.createElement("tr");
+
+    // Thêm hàng mới vào bảng
+    newRow.innerHTML = `
+        <td>${departmentName}</td>
+        <td>${departmentHead}</td>
+        <td>${departmentEmail}</td>
+        <td>${departmentPhone}</td>
+        <td><button class="edit-btn" onclick="editDepartment(this)">Sửa</button></td>
+        <td><button class="delete-btn" onclick="deleteDepartment(this)">Xóa</button></td>
+                        
+    `;
+    updatedTableBody.appendChild(newRow);
+
+    // Xóa dữ liệu trong các trường input sau khi thêm
+    document.getElementById("departmentName").value = "";
+    document.getElementById("departmentHead").value = "";
+    document.getElementById("departmentEmail").value = "";
+    document.getElementById("departmentPhone").value = "";
+
+    alert("Thêm phòng ban thành công!");
 }
 
 function showManageEmployees() {
-    toggleSection("manageEmployees");
+    toggleSection("employeeList");
+    employeeList();
+}
+
+function employeeList() {
+    const url = '../excel_data/data_tt.xlsx';  // Đường dẫn đến tệp Excel chứa dữ liệu nhân viên
+
+    // Đọc tệp Excel và xử lý dữ liệu
+    fetch(url)
+        .then(response => response.arrayBuffer())  // Lấy dữ liệu tệp Excel dưới dạng binary array
+        .then(data => {
+            const workbook = XLSX.read(data, { type: 'array' });  // Đọc dữ liệu tệp Excel
+            const sheet = workbook.Sheets[workbook.SheetNames[0]];  // Lấy bảng đầu tiên trong tệp
+            const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 }); // Chuyển đổi bảng Excel thành mảng dữ liệu 2D
+
+            let monthlyTaxDetails = '';  // Biến để lưu chi tiết thuế của các nhân viên
+
+            // Duyệt qua từng nhân viên và tính thuế
+            for (let i = 1; i < jsonData.length; i++) {  // Bắt đầu từ hàng thứ 2 (hàng đầu là tiêu đề)
+                const row = jsonData[i];  // Mỗi dòng dữ liệu của nhân viên
+                const name = row[1];  // Cột B là tên nhân viên
+                const position = row[2];  // Cột C là chức vụ
+                const email = row[5];  // Cột F là email
+                const phone = row[4];  // Cột E là số điện thoại
+                const salary = row[3];  // Cột D là lương hàng tháng
+                const dependents = row[6];  // Cột G là số người phụ thuộc
+                const year = row[8];  // Cột I là năm
+                const role = row[9];  // Cột J là vai trò
+
+                // Thêm thông tin nhân viên và thuế tính được vào bảng chi tiết
+                monthlyTaxDetails += `
+                <tr>
+                    <td>${i}</td>
+                    <td>${name}</td>
+                    <td>${salary}</td>
+                    <td>${role}</td>
+                </tr>
+            `;
+            }
+
+            // Hiển thị kết quả lên giao diện web trong một bảng HTML
+            const resultTable = document.getElementById("employee-list-table");  // Lấy phần tử bảng trong HTML
+            resultTable.innerHTML = ` 
+            <table class="output-table1">
+                <tr>
+                    <th>STT</th>
+                    <th>Họ và tên</th>
+                    <th>Lương hàng tháng</th>
+                    <th>Phòng ban</th>
+                </tr>
+                ${monthlyTaxDetails}  
+            </table>
+        `;
+        })
+        .catch(error => {
+            console.error('Error loading Excel file:', error);  // Xử lý lỗi nếu có khi đọc tệp Excel
+        });
 }
