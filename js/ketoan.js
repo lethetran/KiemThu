@@ -176,7 +176,7 @@ function viewEmployeeTax() {
             console.error('Error loading Excel file:', error);  // Xử lý lỗi nếu có khi đọc tệp Excel
         });
 }
-
+//tính thuế 1 tháng
 function calculateTestTax() {
     const salary = parseFloat(document.getElementById("salary1").value);
     const dependents = parseInt(document.getElementById("dependent1").value);

@@ -83,7 +83,7 @@ function calculateTestTax() {
         return;
     }
 
-    // Khai báo các mức thuế lũy tiến theo Cách 2
+    // Khai báo các mức thuế lũy tiến
     let taxAmount = 0;
 
     if (taxableIncome <= 5000000) {
@@ -102,18 +102,30 @@ function calculateTestTax() {
         taxAmount = taxableIncome * 0.35 - 9850000;
     }
 
-    // Hiển thị kết quả
+    // Hiển thị kết quả và thông tin chi tiết
     const resultTable = document.getElementById("testTaxTable");
     resultTable.innerHTML = `
     <tr>
         <th>Lương hàng tháng</th>
         <th>Số người phụ thuộc</th>
+        <th>Thu nhập chịu thuế</th>
         <th>Thuế thu nhập cá nhân</th>
     </tr>
     <tr>
         <td>${salary.toFixed(2)} VND</td>
         <td>${dependents}</td>
+        <td>${taxableIncome.toFixed(2)} VND</td>
         <td>${taxAmount.toFixed(2)} VND</td>
+    </tr>
+    <tr>
+        <td colspan="4" style="text-align: left;">
+            <strong>Giải thích:</strong><br>
+            - Giảm trừ cho bản thân: ${exemptionForSelf.toLocaleString()} VND<br>
+            - Giảm trừ cho người phụ thuộc: ${exemptionPerDependent.toLocaleString()} VND x ${dependents} người = ${(exemptionPerDependent * dependents).toLocaleString()} VND<br>
+            - Tổng mức giảm trừ: ${totalExemption.toLocaleString()} VND<br>
+            - Thu nhập chịu thuế: ${taxableIncome.toLocaleString()} VND<br>
+            - Thuế được tính theo biểu thuế lũy tiến từng phần.
+        </td>
     </tr>
     `;
 }
@@ -137,9 +149,12 @@ function calculateMonthlyTax() {
     const taxableIncome = salary - totalExemption;
 
     if (taxableIncome <= 0) {
-        alert("Thu nhập không đủ để tính thuế.");
+        const taxMessage = document.getElementById("taxMessage");
+        taxMessage.style.display = "block"; // Hiển thị thông báo
+        taxMessage.innerText = "Thu nhập không đủ để tính thuế."; // Cập nhật nội dung thông báo
         return;
     }
+    
 
     // Khai báo các mức thuế lũy tiến theo Cách 2
     let taxAmount = 0;
