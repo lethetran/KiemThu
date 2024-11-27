@@ -131,7 +131,7 @@ function calculateTestTax() {
     `;
 }
 
-
+// Tính thuế hàng tháng
 function calculateMonthlyTax() {
     const salary = parseFloat(document.getElementById("salary").value);
     const dependentsInput = document.getElementById("dependents").value;
@@ -215,7 +215,7 @@ function calculateMonthlyTax() {
         </table>
     `;
 }
-
+// Tính thuế hàng năm
 function calculateAnnualTax() {
     const salary = parseFloat(document.getElementById("salary").value);
     const dependentsInput = parseInt(document.getElementById("dependents").value);
@@ -290,7 +290,7 @@ function calculateAnnualTax() {
         </tr>
     `;
 }
-
+// Xuất dữ liệu thuế hàng năm ra file Excel
 function exportToExcel() {
     const table = document.getElementById("annual-tax-table");
     const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet 1" });  // Chuyển bảng HTML thành workbook Excel
@@ -300,7 +300,7 @@ function exportToExcel() {
 
     XLSX.writeFile(wb, `${namefile}_Thuế.xlsx`);  // Tải file Excel
 }
-
+// Xuất dữ liệu thuế hàng tháng ra file Excel
 function employeeList() {
     const url = '../excel_data/data_tt.xlsx';  // Đường dẫn đến tệp Excel chứa dữ liệu nhân viên
 
@@ -390,7 +390,7 @@ function employeeList() {
         .catch(error => {
             console.error('Error loading Excel file:', error);  // Xử lý lỗi nếu có khi đọc tệp Excel
         });
-}
+}// Xuất dữ liệu thuế hàng tháng ra file Excel
 function exportToExcel2() {
     const table = document.getElementById("employee-list-table");  // Lấy bảng dữ liệu thuế
     const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet 1" });  // Chuyển bảng HTML thành workbook Excel
