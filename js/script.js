@@ -31,7 +31,8 @@ function login() {
             phone: row[4], // Số điện thoại cột E
             dependents: row[6], // Người phụ thuộc cột G
             name: row[1], // Tên cột B
-            salary: row[3] // Lương cố định cột D
+            salary: row[3], // Lương cố định cột D
+            department: row[9]// cột J là phòng ban
           }));
 
           // Chuyển hướng dựa vào chức vụ

@@ -10,6 +10,7 @@ window.onload = function () {
     // Hiển thị thông tin trong phần thông tin cá nhân
     document.getElementById("name").value = user.name || "";
     document.getElementById("position").value = user.position || "";
+    document.getElementById("department").value = user.department || "";
     document.getElementById("email").value = user.email || "";
     document.getElementById("phone").value = user.phone || "";
     document.getElementById("dependents").value = user.dependents || "";

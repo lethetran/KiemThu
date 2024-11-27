@@ -11,13 +11,14 @@ window.onload = function () {
     // Hiển thị thông tin trong phần thông tin cá nhân
     document.getElementById("name").value = user.name || "";
     document.getElementById("position").value = user.position || "";
+    document.getElementById("department").value = user.department || "";
     document.getElementById("email").value = user.email || "";
     document.getElementById("phone").value = user.phone || "";
     document.getElementById("dependents").value = user.dependents || "0";
     document.getElementById("salary").value = user.salary || "";
 
     // Cập nhật vai trò trong tiêu đề
-    document.getElementById("user-role").innerHTML = `${user.position}: <strong>${user.name}</strong>`;
+    document.getElementById("user-role").innerHTML = `${user.position} ${user.department}: <strong>${user.name}</strong>`;
 };
 
 // Chuyển đổi giữa các phần
@@ -312,7 +313,7 @@ function employeeList() {
             const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 }); // Chuyển đổi bảng Excel thành mảng dữ liệu 2D
 
             let monthlyTaxDetails = '';  // Biến để lưu chi tiết thuế của các nhân viên
-
+            const user = JSON.parse(sessionStorage.getItem("loggedInUser"));
             // Duyệt qua từng nhân viên và tính thuế
             for (let i = 1; i < jsonData.length; i++) {  // Bắt đầu từ hàng thứ 2 (hàng đầu là tiêu đề)
                 const row = jsonData[i];  // Mỗi dòng dữ liệu của nhân viên
@@ -322,6 +323,7 @@ function employeeList() {
                 const phone = row[4];  // Cột E là số điện thoại
                 const salary = row[3];  // Cột D là lương hàng tháng
                 const dependents = row[6];  // Cột G là số người phụ thuộc
+                const role = row[9];  // Cột J là phong ban
 
                 // Tính thuế thu nhập cá nhân (theo biểu thuế lũy tiến)
                 const exemptionForSelf = 11000000; // Giảm trừ gia cảnh cho bản thân (11 triệu đồng)
@@ -353,11 +355,9 @@ function employeeList() {
                         tax = taxableIncome * 0.35 - 9850000;  // Thuế suất 35% nếu thu nhập trên 80 triệu
                     }
                 }
-
-                // Thêm thông tin nhân viên và thuế tính được vào bảng chi tiết
-                monthlyTaxDetails += `
+                if(role == user.department){
+                    monthlyTaxDetails += `
                 <tr>
-                    <td>${i}</td>
                     <td>${name}</td>
                     <td>${position}</td>
                     <td>${email}</td>
@@ -366,6 +366,8 @@ function employeeList() {
                     <td>${dependents}</td>
                     <td>${tax.toFixed(2)}</td>  
             `;
+                }
+                // Thêm thông tin nhân viên và thuế tính được vào bảng chi tiết
             }
 
             // Hiển thị kết quả lên giao diện web trong một bảng HTML
@@ -373,7 +375,6 @@ function employeeList() {
             resultTable.innerHTML = ` 
             <table class="output-table1">
                 <tr>
-                    <th>STT</th>
                     <th>Họ và tên</th>
                     <th>Chức vụ</th>
                     <th>Email</th>
