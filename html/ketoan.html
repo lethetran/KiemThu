@@ -87,13 +87,13 @@
             </div>
 
             <!-- Tính thuế 1 tháng -->
-            <div id="monthlyTax" class="section" style="display: none;">
+            <div id="monthlyTax" class="section hidden">
                 <!-- Kết quả sẽ được cập nhật ở đây bởi JavaScript -->
                 
             </div>
 
             <!-- Quyết toán thuế 1 năm -->
-            <div id="annualTax" class="section" style="display: none;">
+            <div id="annualTax" class="section hidden">
                 <h3>Kết quả quyết toán thuế 1 năm</h3>
                 <label for="yearSelect">Chọn năm:</label>
                 <select id="yearSelect" onchange="loadAnnualTax()">
@@ -138,6 +138,7 @@
                         <!-- Dữ liệu sẽ được điền từ JavaScript -->
                     </tbody>
                 </table>
+                <button onclick="exportToExcel()">Xuất ra Excel</button>
             </div>
             
             <!-- Quản lý phòng ban -->

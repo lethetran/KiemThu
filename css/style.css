@@ -320,7 +320,7 @@ select option:hover {
 
 /* Header của bảng */
 #employeeTax table thead th {
-    background-color: #007bff; /* Màu nền xanh */
+    background-color: #555; /* Màu nền xanh */
     color: white; /* Chữ màu trắng */
     text-align: center;
     padding: 10px;
@@ -356,7 +356,7 @@ select option:hover {
 #employeeTax table tbody td:nth-child(6)  /* Thuế thu nhập cá nhân */ {
     text-align: center;
     font-weight: bold;
-    color: #007bff; /* Màu xanh nổi bật */
+    color: #555; /* Màu xanh nổi bật */
 }
 
 /* Định dạng nếu bảng không có dữ liệu */
