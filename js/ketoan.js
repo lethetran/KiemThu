@@ -11,7 +11,6 @@ window.onload = function () {
     // Hiển thị thông tin trong phần thông tin cá nhân
     document.getElementById("name").value = user.name || "";
     document.getElementById("position").value = user.position || "";
-    document.getElementById("department").value = user.department || "";
     document.getElementById("email").value = user.email || "";
     document.getElementById("phone").value = user.phone || "";
     document.getElementById("dependents").value = user.dependents || "";
@@ -46,7 +45,6 @@ function showAnnualTax() {
 function showEmployeeTax() {
     toggleSection("employeeTax");
 }
-
 
 function toggleSection(sectionId) {
     const sections = document.querySelectorAll(".section");
@@ -173,7 +171,8 @@ function viewEmployeeTax() {
             console.error('Error loading Excel file:', error);  // Xử lý lỗi nếu có khi đọc tệp Excel
         });
 }
-//tính thuế 1 tháng
+
+//tính thu thuế 1 tháng
 function calculateTestTax() {
     const salary = parseFloat(document.getElementById("salary1").value);
     const dependents = parseInt(document.getElementById("dependent1").value);
@@ -241,6 +240,7 @@ function calculateTestTax() {
     </tr>
     `;
 }
+
 //tính thuế 1 năm
 function calculateMonthlyTax() {
     const salary = parseFloat(document.getElementById("salary").value);
@@ -332,6 +332,7 @@ function calculateMonthlyTax() {
         <p><strong>Giải thích:</strong> Thuế thu nhập cá nhân được tính theo biểu thuế lũy tiến từng phần dựa trên thu nhập chịu thuế.</p>
     `;
 }
+
 //tính thuế 1 năm cho tất cả
 function loadAnnualTax() {
     const selectedYear = document.getElementById("yearSelect").value; // Lấy năm từ dropdown
@@ -345,7 +346,6 @@ function loadAnnualTax() {
             const worksheet = workbook.Sheets[sheetName]; // Lấy nội dung sheet
 
             const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 }); // Chuyển sheet thành mảng 2D
-            const header = jsonData[0]; // Tiêu đề
             const rows = jsonData.slice(1); // Dữ liệu các dòng
 
             // Lọc dữ liệu theo năm
@@ -393,6 +393,7 @@ function loadAnnualTax() {
             alert("Không thể tải dữ liệu thuế.");
         });
 }
+
 //tính thuế
 function calculateAnnualTax(salary, dependents) {
     const exemptionForSelf = 11000000; // Giảm trừ bản thân
@@ -424,6 +425,7 @@ function calculateAnnualTax(salary, dependents) {
 
     return taxAmount;
 }
+
 //tải dữ liệu thuế theo năm
 function populateYearSelect() {
     const filePath = '../excel_data/data_tt.xlsx';
@@ -463,6 +465,7 @@ function populateYearSelect() {
             alert("Không thể tải danh sách năm.");
         });
 }
+
 //tải dữ liệu thuế theo năm
 document.addEventListener("DOMContentLoaded", () => {
     populateYearSelect(); // Tạo danh sách năm
@@ -494,7 +497,8 @@ function loadEmployeeTaxes() {
 
             // Tạo bảng hiển thị
             const tableBody = document.getElementById("employeeTaxTable");
-            tableBody.innerHTML = ""; // Xóa nội dung cũ
+            tableBody.innerHTML = ""; 
+            // Xóa nội dung cũ
 
             rows.forEach(row => {
                 const id = row[0];
@@ -523,7 +527,7 @@ function loadEmployeeTaxes() {
             alert("Không thể tải dữ liệu từ file Excel.");
         });
 }
-
+// 
 function calculateTax(salary, dependents) {
     const exemptionForSelf = 11000000; // Giảm trừ bản thân
     const exemptionPerDependent = 4400000; // Giảm trừ mỗi người phụ thuộc
@@ -565,6 +569,7 @@ function showManageDepartments() {
     toggleSection("manageDepartments");
     loadDepartments();
 }
+//
 function loadDepartments() {
     const url = '../excel_data/data_tt.xlsx';  // Đường dẫn đến tệp Excel chứa dữ liệu nhân viên
 
@@ -628,6 +633,7 @@ function loadDepartments() {
             console.error('Error loading Excel file:', error);  // Xử lý lỗi nếu có khi đọc tệp Excel
         });
 }
+
 // Xóa và chỉnh sửa phòng ban
 function deleteDepartment(button) {
     const row = button.parentElement.parentElement;  // Lấy hàng chứa nút "Xóa"
@@ -768,12 +774,12 @@ function employeeList() {
             for (let i = 1; i < jsonData.length; i++) {  // Bắt đầu từ hàng thứ 2 (hàng đầu là tiêu đề)
                 const row = jsonData[i];  // Mỗi dòng dữ liệu của nhân viên
                 const name = row[1];  // Cột B là tên nhân viên
-                const position = row[2];  // Cột C là chức vụ
-                const email = row[5];  // Cột F là email
-                const phone = row[4];  // Cột E là số điện thoại
+                // const position = row[2];  // Cột C là chức vụ
+                // const email = row[5];  // Cột F là email
+                // const phone = row[4];  // Cột E là số điện thoại
                 const salary = row[3];  // Cột D là lương hàng tháng
-                const dependents = row[6];  // Cột G là số người phụ thuộc
-                const year = row[8];  // Cột I là năm
+                // const dependents = row[6];  // Cột G là số người phụ thuộc
+                // const year = row[8];  // Cột I là năm
                 const role = row[9];  // Cột J là vai trò
 
                 // Thêm thông tin nhân viên và thuế tính được vào bảng chi tiết
@@ -805,3 +811,94 @@ function employeeList() {
             console.error('Error loading Excel file:', error);  // Xử lý lỗi nếu có khi đọc tệp Excel
         });
 }
+
+//chọn phòng ban
+function loadRole() {
+    const roleSelect = document.getElementById("PosittonSelect");
+    const selectedRole = roleSelect.value;
+    const url = '../excel_data/data_tt.xlsx';
+
+    if (selectedRole === "") {
+        return; // Do nothing if the default option is selected
+    }
+
+    fetch(url)
+        .then(response => response.arrayBuffer())
+        .then(data => {
+            const workbook = XLSX.read(data, { type: 'array' });
+            const sheet = workbook.Sheets[workbook.SheetNames[0]];
+            const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+            let filteredDetails = '';
+
+            for (let i = 1; i < jsonData.length; i++) {
+                const row = jsonData[i];
+                const role = row[9];
+
+                if (role === selectedRole) {
+                    const name = row[1];
+                    const salary = row[3];
+                    filteredDetails += `
+                        <tr>
+                            <td>${i}</td>
+                            <td>${name}</td>
+                            <td>${salary}</td>
+                            <td>${role}</td>
+                        </tr>
+                    `;
+                }
+            }
+
+            const resultTable = document.getElementById("employee-list-table");
+            resultTable.innerHTML = `
+                <table class="output-table1">
+                    <tr>
+                        <th>STT</th>
+                        <th>Họ và tên</th>
+                        <th>Lương hàng tháng</th>
+                        <th>Phòng ban</th>
+                    </tr>
+                    ${filteredDetails}
+                </table>
+            `;
+        })
+        .catch(error => {
+            console.error('Error loading Excel file:', error);
+        });
+}
+//
+function populateRoleSelect() {
+    const url = '../excel_data/data_tt.xlsx';
+
+    fetch(url)
+        .then(response => response.arrayBuffer())
+        .then(data => {
+            const workbook = XLSX.read(data, { type: 'array' });
+            const sheet = workbook.Sheets[workbook.SheetNames[0]];
+            const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+            const roles = jsonData.slice(1).map(row => row[9]);
+            const uniqueRoles = [...new Set(roles.filter(role => role))];
+
+            const roleSelect = document.getElementById("PosittonSelect");
+            roleSelect.innerHTML = "";
+
+            const defaultOption = document.createElement("option");
+            defaultOption.value = "";
+            defaultOption.textContent = "Chọn phòng ban";
+            roleSelect.appendChild(defaultOption);
+
+            uniqueRoles.forEach(role => {
+                const option = document.createElement("option");
+                option.value = role;
+                option.textContent = role;
+                roleSelect.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.error('Error loading Excel file:', error);
+        });
+}
+document.addEventListener("DOMContentLoaded", () => {
+    populateRoleSelect();
+});
