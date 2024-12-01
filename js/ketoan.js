@@ -752,6 +752,65 @@ function addDepartment() {
     alert("Thêm phòng ban thành công!");
 }
 
+function calculateDepartmentTax() {
+    const url = '../excel_data/data_tt.xlsx'; // Đường dẫn đến file Excel chứa dữ liệu nhân viên
+
+    fetch(url)
+        .then(response => response.arrayBuffer())
+        .then(data => {
+            const workbook = XLSX.read(data, { type: 'array' });
+            const sheet = workbook.Sheets[workbook.SheetNames[0]];
+            const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+            const departments = {}; // Lưu dữ liệu phòng ban và tổng thuế
+            const exemptionForSelf = 11000000; // Giảm trừ bản thân
+            const exemptionPerDependent = 4400000; // Giảm trừ mỗi người phụ thuộc
+
+            for (let i = 1; i < jsonData.length; i++) {
+                const row = jsonData[i];
+                const department = row[9]; // Phòng ban
+                const salary = row[3]; // Lương
+                const dependents = row[6]; // Số người phụ thuộc
+
+                // Tính giảm trừ và thu nhập chịu thuế
+                const totalExemption = exemptionForSelf + (exemptionPerDependent * dependents);
+                const taxableIncome = salary - totalExemption;
+
+                let tax = 0;
+                if (taxableIncome > 0) {
+                    if (taxableIncome <= 5000000) tax = taxableIncome * 0.05;
+                    else if (taxableIncome <= 10000000) tax = taxableIncome * 0.1 - 250000;
+                    else if (taxableIncome <= 18000000) tax = taxableIncome * 0.15 - 750000;
+                    else if (taxableIncome <= 32000000) tax = taxableIncome * 0.2 - 1650000;
+                    else if (taxableIncome <= 52000000) tax = taxableIncome * 0.25 - 3250000;
+                    else if (taxableIncome <= 80000000) tax = taxableIncome * 0.3 - 5850000;
+                    else tax = taxableIncome * 0.35 - 9850000;
+                }
+
+                // Tính tổng thuế theo phòng ban
+                if (!departments[department]) {
+                    departments[department] = 0;
+                }
+                departments[department] += tax;
+            }
+
+            // Hiển thị kết quả
+            let resultHTML = `<h3>Thuế của các phòng ban</h3>
+                              <table class="output-table">
+                                <tr><th>Phòng ban</th><th>Tổng thuế (VND)</th></tr>`;
+            for (const [department, totalTax] of Object.entries(departments)) {
+                resultHTML += `<tr><td>${department}</td><td>${totalTax.toLocaleString()}</td></tr>`;
+            }
+            resultHTML += `</table>`;
+
+            document.getElementById("department-list-table").innerHTML = resultHTML;
+        })
+        .catch(error => {
+            console.error("Lỗi khi đọc file Excel:", error);
+            alert("Không thể tính thuế cho phòng ban.");
+        });
+}
+
 function showManageEmployees() {
     toggleSection("employeeList");
     employeeList();
