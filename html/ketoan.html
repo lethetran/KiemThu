@@ -34,7 +34,7 @@
                 </div>
             </div>
 
-            <!-- Thông tin cá nhân -->           
+            <!-- Thông tin cá nhân -->
             <div id="personalInfo" class="section">
                 <h2>Thông Tin Cá Nhân</h2>
                 <label for="name">Họ và tên:</label>
@@ -87,9 +87,9 @@
             </div>
 
             <!-- Tính thuế 1 tháng -->
-            <div id="monthlyTax" class="section hidden">
+            <div id="monthlyTax" class="section hidden" style="display: none;">
                 <!-- Kết quả sẽ được cập nhật ở đây bởi JavaScript -->
-                
+
             </div>
 
             <!-- Quyết toán thuế 1 năm -->
@@ -104,7 +104,7 @@
                 </table>
                 <button onclick="exportToExcel()">Xuất ra Excel</button>
             </div>
-            
+
 
             <!-- Thiết lập mức giảm trừ -->
             <div id="setReduction" class="section" style="display: none;">
@@ -121,7 +121,7 @@
             <!-- Xem thuế nhân viên -->
             <div id="employeeTax" class="section" style="display: none;">
                 <h2>Xem thuế nhân viên</h2>
-                
+
                 <!-- Bảng hiển thị thông tin nhân viên và thuế -->
                 <table>
                     <thead>
@@ -140,7 +140,7 @@
                 </table>
                 <button onclick="exportToExcel()">Xuất ra Excel</button>
             </div>
-            
+
             <!-- Quản lý phòng ban -->
             <div id="manageDepartments" class="section" style="display: none;">
                 <h2>Quản lý phòng ban</h2>
@@ -152,7 +152,8 @@
                 <input type="email" id="departmentEmail" placeholder="Nhập email">
                 <label for="phone">Số điện thoại:</label>
                 <input type="tel" id="departmentPhone" placeholder="Nhập số điện thoại">
-                <button id="calculateDepartmentTaxButton" onclick="calculateDepartmentTax()">Tính thuế phòng ban</button>
+                <button id="calculateDepartmentTaxButton" onclick="calculateDepartmentTax()">Tính thuế phòng
+                    ban</button>
                 <button id="addDepartmentButton" onclick="addDepartment()">Thêm phòng ban</button>
 
                 <table id="department-list-table" class="output-table">
@@ -162,7 +163,7 @@
 
             <!-- Quản lý nhân viên -->
             <div id="employeeList" class="section" style="display: none;">
-                
+
                 <h2>Quản Lý nhân viên</h2>
                 <label for="employeeId">ID nhân viên:</label>
                 <input type="text" id="employeeId" placeholder="Nhập ID nhân viên">
@@ -183,13 +184,13 @@
                     <!-- Dữ liệu sẽ được hiển thị ở đây -->
                 </table>
                 <button onclick="exportToExcel()">Xuất ra Excel</button>
-            </div>           
+            </div>
         </div>
     </div>
     <div class="footer">
         <p>&copy; 2024 Phenikaa University. All rights reserved.</p>
     </div>
     <script src="../js/ketoan.js"></script>
-    <!-- <script src="../js/ketoan.js"></script> -->
-</body> 
+</body>
+
 </html>
