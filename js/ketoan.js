@@ -194,6 +194,8 @@ function calculateTestTax() {
         return;
     }
 
+    alert("Đang tính thuế...");
+
     // Khai báo các mức thuế lũy tiến
     let taxAmount = 0;
 

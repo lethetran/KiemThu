@@ -153,8 +153,37 @@ function calculateAnnualTax() {
     const position = document.getElementById("position").value;
     const email = document.getElementById("email").value;
 
+    // Kiểm tra nhập liệu cơ bản
     if (isNaN(salary) || isNaN(dependents)) {
         alert("Vui lòng nhập đầy đủ và chính xác thông tin!");
+        return;
+    }
+
+    // Kiểm tra lương không hợp lệ
+    if (salary <= 0) {
+        alert("Lương phải lớn hơn 0!");
+        return;
+    }
+
+    // Kiểm tra số người phụ thuộc không hợp lệ
+    if (dependents < 0) {
+        alert("Số người phụ thuộc không thể là số âm!");
+        return;
+    }
+
+    if (dependents > 10) {
+        alert("Số người phụ thuộc không thể lớn hơn 10!");
+        return;
+    }
+
+    // Kiểm tra tên và email
+    if (name.trim() === "") {
+        alert("Vui lòng nhập tên đầy đủ!");
+        return;
+    }
+
+    if (email.trim() === "" || !email.includes("@")) {
+        alert("Vui lòng nhập địa chỉ email hợp lệ!");
         return;
     }
 
@@ -201,6 +230,9 @@ function calculateAnnualTax() {
             <td><strong>${totalAnnualTax.toFixed(2)} VND</strong></td>
         </tr>
     `;
+
+    // Hiển thị thông báo thành công
+    alert(`Thuế hàng năm đã được tính toán thành công! Tổng thuế: ${totalAnnualTax.toFixed(2)} VND`);
 }
 
 function exportToExcel() {
